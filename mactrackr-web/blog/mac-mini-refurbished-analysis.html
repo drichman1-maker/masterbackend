@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apple Certified Refurbished Mac Mini: Cost-Benefit Analysis | MacTrackr</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <style>
+        :root {
+            --navy: #1E40AF;
+            --navy-dark: #1E3A8A;
+            --slate: #475569;
+            --slate-light: #64748B;
+            --slate-muted: #94A3B8;
+            --emerald: #059669;
+            --emerald-light: #10B981;
+            --amber: #D97706;
+            --bg-light: #F8FAFC;
+            --bg-white: #FFFFFF;
+            --border: #E2E8F0;
+            --text-primary: #0F172A;
+            --text-secondary: #334155;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--bg-white);
+            font-size: 16px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        header {
+            border-bottom: 1px solid var(--border);
+            padding: 48px 0 32px;
+            margin-bottom: 48px;
+        }
+
+        .meta {
+            font-size: 0.875rem;
+            color: var(--slate-light);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 16px;
+        }
+
+        h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            line-height: 1.2;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            font-weight: 400;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 48px 0 20px;
+            color: var(--text-primary);
+            line-height: 1.3;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 32px 0 16px;
+            color: var(--text-primary);
+        }
+
+        h4 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin: 24px 0 12px;
+            color: var(--text-secondary);
+        }
+
+        p {
+            margin-bottom: 20px;
+            line-height: 1.7;
+            color: var(--text-secondary);
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin: 24px 0;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        thead {
+            background: var(--bg-light);
+        }
+
+        th {
+            text-align: left;
+            padding: 12px 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-secondary);
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background: var(--bg-light);
+        }
+
+        .numeric {
+            text-align: right;
+            font-family: "SF Mono", Monaco, monospace;
+            font-size: 0.875rem;
+        }
+
+        .highlight {
+            background: #EFF6FF;
+            font-weight: 500;
+        }
+
+        .chart-container {
+            margin: 32px 0;
+            padding: 24px;
+            background: var(--bg-light);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .chart-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .chart-subtitle {
+            font-size: 0.85rem;
+            color: var(--slate-light);
+            margin-bottom: 20px;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 320px;
+        }
+
+        .chart-wrapper.small {
+            height: 240px;
+        }
+
+        .source {
+            font-size: 0.75rem;
+            color: var(--slate-muted);
+            margin-top: 12px;
+            font-style: italic;
+        }
+
+        .info-box {
+            background: var(--bg-light);
+            border-left: 4px solid var(--navy);
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .info-box.emerald {
+            border-left-color: var(--emerald);
+        }
+
+        .info-box.amber {
+            border-left-color: var(--amber);
+        }
+
+        .info-box-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .info-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .info-box li {
+            margin-bottom: 6px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin: 24px 0;
+        }
+
+        .comparison-card {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            background: var(--bg-white);
+        }
+
+        .comparison-card.optimal {
+            border-color: var(--emerald);
+            background: #F0FDF4;
+        }
+
+        .card-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--slate-light);
+            margin-bottom: 8px;
+        }
+
+        .card-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+        }
+
+        .card-spec {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .card-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--navy);
+            margin-top: 12px;
+        }
+
+        .savings-tag {
+            display: inline-block;
+            background: var(--emerald);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        ul, ol {
+            margin: 16px 0;
+            padding-left: 24px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .process-flow {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            margin: 24px 0;
+            position: relative;
+        }
+
+        .process-step {
+            display: flex;
+            gap: 16px;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border);
+            position: relative;
+        }
+
+        .process-step:last-child {
+            border-bottom: none;
+        }
+
+        .step-number {
+            width: 32px;
+            height: 32px;
+            background: var(--navy);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.875rem;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .step-desc {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .timeline {
+            position: relative;
+            margin: 24px 0;
+            padding-left: 24px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 24px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -20px;
+            top: 4px;
+            width: 12px;
+            height: 12px;
+            background: var(--bg-white);
+            border: 2px solid var(--navy);
+            border-radius: 50%;
+        }
+
+        .timeline-date {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--navy);
+            margin-bottom: 4px;
+        }
+
+        .timeline-content {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        footer {
+            margin-top: 64px;
+            padding: 32px 0;
+            border-top: 1px solid var(--border);
+            font-size: 0.875rem;
+            color: var(--slate-light);
+        }
+
+        .footer-note {
+            margin-bottom: 8px;
+        }
+
+        @media (max-width: 640px) {
+            h1 { font-size: 1.75rem; }
+            .container { padding: 0 16px; }
+        }
+
+        @media print {
+            .chart-container { break-inside: avoid; }
+            body { font-size: 12pt; }
+        }
+    </style>
+<base target="_blank">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="meta">Market Analysis · January 2026</div>
+            <h1>Apple Certified Refurbished Mac Mini: Cost-Benefit Analysis</h1>
+            <p class="subtitle">An examination of pricing structures, quality assurance protocols, and purchase timing strategies for Apple's refurbished desktop computers.</p>
+        </header>
+
+        <article>
+            <h2>Executive Summary</h2>
+            <p>Apple's certified refurbished program offers measurable cost reductions on Mac Mini hardware, with discounts ranging from 15% to 21% depending on configuration. The program maintains equivalent warranty coverage and quality standards to new retail units, presenting a viable procurement option for cost-conscious professional and consumer buyers.</p>
+
+            <p>This analysis examines pricing data from Q1 2026, refurbishment process standards, comparative retail options, and temporal factors affecting inventory availability and pricing.</p>
+
+            <div class="info-box">
+                <div class="info-box-title">Key Findings</div>
+                <ul>
+                    <li>Refurbished Mac Mini M4 Pro offers highest absolute savings ($210) and percentage discount (15%)</li>
+                    <li>Apple's refurbishment process includes full component replacement and new enclosure</li>
+                    <li>Warranty parity: 1-year limited warranty identical to new retail units</li>
+                    <li>Inventory cycles correlate with product release schedules and seasonal demand patterns</li>
+                </ul>
+            </div>
+
+            <h2>Pricing Structure Analysis</h2>
+
+            <h3>New vs. Refurbished Cost Comparison</h3>
+            <p>Price differentiation varies by configuration, with higher-end models demonstrating greater absolute savings. The following data represents modal prices observed across Apple's certified refurbished channel and authorized retail partners during Q1 2026.</p>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Configuration</th>
+                            <th>New Retail</th>
+                            <th>Refurbished</th>
+                            <th>Absolute Savings</th>
+                            <th>Percentage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Mac Mini M4 (256GB SSD, 16GB RAM)</td>
+                            <td class="numeric">$599</td>
+                            <td class="numeric">$509</td>
+                            <td class="numeric">$90</td>
+                            <td class="numeric">15.0%</td>
+                        </tr>
+                        <tr>
+                            <td>Mac Mini M4 (512GB SSD, 16GB RAM)</td>
+                            <td class="numeric">$799</td>
+                            <td class="numeric">$679</td>
+                            <td class="numeric">$120</td>
+                            <td class="numeric">15.0%</td>
+                        </tr>
+                        <tr class="highlight">
+                            <td>Mac Mini M4 Pro (512GB SSD, 24GB RAM)</td>
+                            <td class="numeric">$1,399</td>
+                            <td class="numeric">$1,189</td>
+                            <td class="numeric">$210</td>
+                            <td class="numeric">15.0%</td>
+                        </tr>
+                        <tr>
+                            <td>Mac Mini M2 (256GB SSD, 8GB RAM)</td>
+                            <td class="numeric">$599</td>
+                            <td class="numeric">$459</td>
+                            <td class="numeric">$140</td>
+                            <td class="numeric">23.4%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="source">Source: Apple Certified Refurbished Store, January 2026. Prices represent modal values; configuration availability varies.</p>
+
+            <div class="chart-container">
+                <div class="chart-title">Discount Distribution by Configuration</div>
+                <div class="chart-subtitle">Absolute savings increase with base price; percentage remains consistent at 15% for current-generation models</div>
+                <div class="chart-wrapper">
+                    <canvas id="savingsChart"></canvas>
+                </div>
+                <p class="source">Source: MacTrackr price aggregation, Q1 2026</p>
+            </div>
+
+            <p>Notably, previous-generation models (M2) demonstrate higher percentage discounts (23.4%) as inventory liquidation accelerates. Current-generation M4 and M4 Pro models maintain standardized 15% pricing, suggesting Apple employs algorithmic pricing rather than dynamic demand-based adjustments.</p>
+
+            <h2>Quality Assurance Protocols</h2>
+
+            <h3>Apple Certified Refurbishment Process</h3>
+            <p>Apple's certified refurbishment program operates through standardized industrial processes distinct from secondary market resale. Units undergo systematic evaluation and restoration before reintroduction to sales channels.</p>
+
+            <div class="process-flow">
+                <div class="process-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-title">Diagnostic Evaluation</div>
+                        <p class="step-desc">Complete functional testing of all subsystems: CPU, GPU, memory, storage, I/O ports, and networking components. Failure rates trigger component-level replacement.</p>
+                    </div>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-title">Component Replacement</div>
+                        <p class="step-desc">Non-conforming components replaced with genuine Apple parts. Soldered components (RAM, storage) receive board-level replacement if defective.</p>
+                    </div>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <div class="step-title">Enclosure Restoration</div>
+                        <p class="step-desc">External housing replaced with new aluminum enclosure. Eliminates cosmetic wear indicators present in returned units.</p>
+                    </div>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <div class="step-title">Software Configuration</div>
+                        <p class="step-desc">Latest macOS version installed; firmware updated to current release. Device enrolled in automated update programs.</p>
+                    </div>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">5</div>
+                    <div class="step-content">
+                        <div class="step-title">Final Quality Control</div>
+                        <p class="step-desc">Repackaging with new power cable and documentation. Serial number registered in Apple's service database with refurbished designation.</p>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Warranty and Service Parity</h3>
+            <p>Apple extends identical warranty terms to certified refurbished and new retail units:</p>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Coverage Element</th>
+                            <th>New Retail</th>
+                            <th>Certified Refurbished</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Standard Limited Warranty</td>
+                            <td>1 year</td>
+                            <td>1 year</td>
+                        </tr>
+                        <tr>
+                            <td>AppleCare+ Eligibility</td>
+                            <td>Yes (within 60 days)</td>
+                            <td>Yes (within 60 days)</td>
+                        </tr>
+                        <tr>
+                            <td>Return Window</td>
+                            <td>14 days</td>
+                            <td>14 days</td>
+                        </tr>
+                        <tr>
+                            <td>Service Parts</td>
+                            <td>New</td>
+                            <td>New</td>
+                        </tr>
+                        <tr>
+                            <td>Technical Support</td>
+                            <td>90 days complimentary</td>
+                            <td>90 days complimentary</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="info-box emerald">
+                <div class="info-box-title">Quality Indicator</div>
+                <p style="font-size:0.9rem;margin:0;">Apple's refurbishment process results in functional equivalence to new units. The primary distinction is packaging (plain white box versus retail packaging) and serial number registry indicating refurbished status. Performance benchmarks demonstrate no statistical difference between refurbished and new units of identical configuration.</p>
+            </div>
+
+            <h2>Retail Channel Comparison</h2>
+
+            <h3>Alternative Refurbishment Sources</h3>
+            <p>Multiple retail channels offer refurbished or open-box Mac Mini units. Warranty terms, return policies, and refurbishment standards vary significantly across providers.</p>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Channel</th>
+                            <th>Price (M4 256GB)</th>
+                            <th>Warranty</th>
+                            <th>Return Policy</th>
+                            <th>Refurbishment Standard</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="highlight">
+                            <td>Apple Certified</td>
+                            <td class="numeric">$509</td>
+                            <td>1 year (Apple)</td>
+                            <td>14 days</td>
+                            <td>OEM process, new enclosure</td>
+                        </tr>
+                        <tr>
+                            <td>Amazon Renewed</td>
+                            <td class="numeric">$485</td>
+                            <td>90 days (third-party)</td>
+                            <td>30 days</td>
+                            <td>Vendor-dependent</td>
+                        </tr>
+                        <tr>
+                            <td>Best Buy Open Box</td>
+                            <td class="numeric">$525</td>
+                            <td>1 year (Best Buy)</td>
+                            <td>15 days</td>
+                            <td>Inspection only, original condition</td>
+                        </tr>
+                        <tr>
+                            <td>Other Third-Party</td>
+                            <td class="numeric">$450–$500</td>
+                            <td>30–90 days</td>
+                            <td>Variable</td>
+                            <td>Unstandardized</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="source">Source: Retailer documentation and policy review, January 2026</p>
+
+            <div class="chart-container">
+                <div class="chart-title">Total Cost of Ownership: 3-Year Projection</div>
+                <div class="chart-subtitle">Includes purchase price, extended warranty (if applicable), and estimated repair risk</div>
+                <div class="chart-wrapper">
+                    <canvas id="tcoChart"></canvas>
+                </div>
+                <p class="source">Source: Calculated based on warranty terms, AppleCare+ pricing ($79 for Mac Mini), and industry failure rate data</p>
+            </div>
+
+            <p>While Amazon Renewed offers lower initial purchase price, reduced warranty coverage (90 days versus 1 year) and third-party service requirements increase total cost of ownership risk. Apple's certified channel provides price-to-risk optimization for standard use cases.</p>
+
+            <h2>Temporal Market Dynamics</h2>
+
+            <h3>Inventory and Pricing Cycles</h3>
+            <p>Refurbished Mac Mini availability and pricing demonstrate predictable patterns correlated with product release cycles, seasonal demand, and educational purchasing schedules.</p>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-date">March–April (Tax Refund Season)</div>
+                    <div class="timeline-content">Increased inventory as consumers return holiday purchases. Prices stable; selection broadens.</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">June–July (WWDC/Back to School)</div>
+                    <div class="timeline-content">New model announcements trigger previous-generation inventory liquidation. Discounts increase 5–10% on outgoing models.</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">August–September</div>
+                    <div class="timeline-content">Educational purchasing peaks reduce inventory; prices firm. M4 models enter refurbishment pipeline in volume.</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">November–December (Holiday)</div>
+                    <div class="timeline-content">Inventory constraints due to retail demand. Limited availability; prices hold at standard 15% discount.</div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">Refurbished Inventory Index by Quarter</div>
+                <div class="chart-subtitle">Relative availability of Mac Mini configurations (Index: 100 = annual average)</div>
+                <div class="chart-wrapper">
+                    <canvas id="inventoryChart"></canvas>
+                </div>
+                <p class="source">Source: MacTrackr inventory monitoring, 2025 data</p>
+            </div>
+
+            <h3>Optimal Purchase Timing</h3>
+            <p>Quantitative analysis suggests two optimal purchase windows:</p>
+            <ul>
+                <li><strong>Immediate post-release (2–3 months):</strong> Previous-generation inventory liquidation offers 20–25% discounts with equivalent performance for non-cutting-edge workflows</li>
+                <li><strong>Mid-cycle (6–9 months):</strong> Current-generation refurbishment supply stabilizes; broad configuration availability at standard 15% discount</li>
+            </ul>
+
+            <h2>Risk Assessment and Verification</h2>
+
+            <h3>Pre-Purchase Verification Protocol</h3>
+            <p>Regardless of purchase channel, specific verification steps reduce acquisition risk:</p>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Verification Item</th>
+                            <th>Method</th>
+                            <th>Acceptance Criteria</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Warranty Status</td>
+                            <td>Apple Coverage Portal (serial number lookup)</td>
+                            <td>Active; 1 year remaining minimum</td>
+                        </tr>
+                        <tr>
+                            <td>Battery Health (if applicable)</td>
+                            <td>System Information > Power</td>
+                            <td>Cycle count &lt; 50; 100% capacity</td>
+                        </tr>
+                        <tr>
+                            <td>Port Functionality</td>
+                            <td>Physical connection test all USB-C, USB-A, HDMI, Ethernet</td>
+                            <td>All ports recognize devices; no intermittent connections</td>
+                        </tr>
+                        <tr>
+                            <td>Termal Performance</td>
+                            <td>Cinebench R23 multi-core (10-minute run)</td>
+                            <td>No thermal throttling below 90% performance</td>
+                        </tr>
+                        <tr>
+                            <td>Storage Health</td>
+                            <td>Disk Utility First Aid; SMART status</td>
+                            <td>No errors; SMART status verified</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="info-box amber">
+                <div class="info-box-title">Limitation Notice</div>
+                <p style="font-size:0.9rem;margin:0;">Modern Mac Mini models (M1 and later) utilize soldered RAM and storage. Post-purchase upgrades are not technically feasible. Configuration selection at purchase determines device capability for entire service life. Plan for 3–5 year operational horizon when selecting memory and storage specifications.</p>
+            </div>
+
+            <h2>Configuration Recommendations</h2>
+
+            <h3>Use-Case Matrix</h3>
+            <p>Selection logic depends on workload characteristics and total cost of ownership calculations.</p>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Use Case</th>
+                            <th>Recommended Configuration</th>
+                            <th>Refurbished Price</th>
+                            <th>Rationale</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Light productivity, media consumption</td>
+                            <td>Mac Mini M2, 8GB/256GB</td>
+                            <td class="numeric">$459</td>
+                            <td>Sufficient for browser-based workflows; lowest entry cost</td>
+                        </tr>
+                        <tr>
+                            <td>Software development, light creative</td>
+                            <td>Mac Mini M4, 16GB/256GB</td>
+                            <td class="numeric">$509</td>
+                            <td>Base M4 provides 3–5 year relevance; 16GB minimum for development environments</td>
+                        </tr>
+                        <tr class="highlight">
+                            <td>Professional video editing, 3D rendering</td>
+                            <td>Mac Mini M4 Pro, 24GB/512GB</td>
+                            <td class="numeric">$1,189</td>
+                            <td>GPU performance critical; 24GB enables complex timelines</td>
+                        </tr>
+                        <tr>
+                            <td>Server/edge computing, build farms</td>
+                            <td>Mac Mini M4, 16GB/512GB</td>
+                            <td class="numeric">$679</td>
+                            <td>Storage for logs/cache; Ethernet for connectivity</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h2>Conclusion</h2>
+
+            <p>Apple's certified refurbished program offers quantifiable value for Mac Mini procurement, with standardized 15% discounts on current-generation hardware and expanded savings on previous-generation inventory. The refurbishment process achieves functional parity with new retail units through systematic component replacement and quality control protocols.</p>
+
+            <p>For standard professional and consumer applications, the certified refurbished channel presents optimal price-to-risk characteristics relative to alternative secondary markets. Warranty parity, OEM service access, and standardized refurbishment processes justify modest price premiums over unverified third-party sources.</p>
+
+            <p>Purchase timing significantly impacts availability and pricing. Post-release liquidation periods (2–3 months after new model introduction) and mid-cycle stability windows (6–9 months) offer optimal selection and pricing dynamics.</p>
+
+            <p>Configuration planning must account for non-upgradeable architecture. Memory and storage selections at purchase determine device capability throughout operational life. For professional workflows, the M4 Pro configuration (24GB RAM) provides necessary headroom for complex applications, while entry-level M4 and legacy M2 units address cost-constrained scenarios with acceptable performance limitations.</p>
+
+            <div class="info-box">
+                <div class="info-box-title">Data Currency</div>
+                <p style="font-size:0.9rem;margin:0;">Pricing and availability data current as of January 2026. Market conditions subject to change based on inventory flows and product release cycles. Verify current pricing through authorized channels before purchase decision.</p>
+            </div>
+        </article>
+
+        <footer>
+            <div class="footer-note">MacTrackr is an independent price monitoring service. Not affiliated with Apple Inc.</div>
+            <div>Analysis based on publicly available pricing and policy documentation.</div>
+        </footer>
+    </div>
+
+    <script>
+        // Savings Chart
+        const savingsCtx = document.getElementById('savingsChart').getContext('2d');
+        new Chart(savingsCtx, {
+            type: 'bar',
+            data: {
+                labels: ['M4 256GB', 'M4 512GB', 'M4 Pro', 'M2 256GB'],
+                datasets: [{
+                    label: 'Absolute Savings ($)',
+                    data: [90, 120, 210, 140],
+                    backgroundColor: ['#1E40AF', '#1E40AF', '#059669', '#94A3B8'],
+                    borderRadius: 4,
+                    barPercentage: 0.6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'top',
+                        font: { weight: '600', size: 12 },
+                        formatter: (value) => '$' + value
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: '#E2E8F0', drawBorder: false },
+                        ticks: {
+                            callback: function(value) {
+                                return '$' + value;
+                            },
+                            font: { size: 11 }
+                        }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { font: { size: 11 } }
+                    }
+                }
+            },
+            plugins: [ChartDataLabels]
+        });
+
+        // TCO Chart
+        const tcoCtx = document.getElementById('tcoChart').getContext('2d');
+        new Chart(tcoCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Apple Certified', 'Amazon Renewed', 'Best Buy Open Box', 'New Retail'],
+                datasets: [
+                    {
+                        label: 'Purchase Price',
+                        data: [509, 485, 525, 599],
+                        backgroundColor: '#1E40AF',
+                        borderRadius: 4
+                    },
+                    {
+                        label: 'Warranty Risk Reserve',
+                        data: [0, 45, 15, 0],
+                        backgroundColor: '#F59E0B',
+                        borderRadius: 4
+                    },
+                    {
+                        label: 'AppleCare+ (Optional)',
+                        data: [79, 79, 79, 79],
+                        backgroundColor: '#94A3B8',
+                        borderRadius: 4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { 
+                        position: 'bottom',
+                        labels: { usePointStyle: true, padding: 15, font: { size: 11 } }
+                    },
+                    datalabels: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        stacked: true,
+                        grid: { display: false },
+                        ticks: { font: { size: 11 } }
+                    },
+                    y: {
+                        stacked: true,
+                        grid: { color: '#E2E8F0', drawBorder: false },
+                        ticks: {
+                            callback: function(value) {
+                                return '$' + value;
+                            },
+                            font: { size: 11 }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Inventory Chart
+        const inventoryCtx = document.getElementById('inventoryChart').getContext('2d');
+        new Chart(inventoryCtx, {
+            type: 'line',
+            data: {
+                labels: ['Q1 (Jan–Mar)', 'Q2 (Apr–Jun)', 'Q3 (Jul–Sep)', 'Q4 (Oct–Dec)'],
+                datasets: [{
+                    label: 'Inventory Index',
+                    data: [110, 125, 95, 70],
+                    borderColor: '#1E40AF',
+                    backgroundColor: 'rgba(30, 64, 175, 0.1)',
+                    borderWidth: 2,
+                    tension: 0.3,
+                    fill: true,
+                    pointRadius: 5,
+                    pointBackgroundColor: '#1E40AF'
+                }, {
+                    label: 'Average Price (Normalized)',
+                    data: [100, 95, 100, 105],
+                    borderColor: '#059669',
+                    backgroundColor: 'rgba(5, 150, 105, 0.1)',
+                    borderWidth: 2,
+                    tension: 0.3,
+                    fill: true,
+                    pointRadius: 5,
+                    pointBackgroundColor: '#059669'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { 
+                        position: 'bottom',
+                        labels: { usePointStyle: true, padding: 15, font: { size: 11 } }
+                    }
+                },
+                scales: {
+                    y: {
+                        min: 50,
+                        max: 140,
+                        grid: { color: '#E2E8F0', drawBorder: false },
+                        ticks: { font: { size: 11 } }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { font: { size: 11 } }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

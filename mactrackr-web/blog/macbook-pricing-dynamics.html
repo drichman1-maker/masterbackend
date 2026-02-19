@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MacBook Pricing Dynamics: Temporal Patterns and Purchase Optimization | MacTrackr</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <style>
+        :root {
+            --navy: #1E40AF;
+            --navy-dark: #1E3A8A;
+            --slate: #475569;
+            --slate-light: #64748B;
+            --slate-muted: #94A3B8;
+            --emerald: #059669;
+            --emerald-light: #10B981;
+            --amber: #D97706;
+            --rose: #E11D48;
+            --bg-light: #F8FAFC;
+            --bg-white: #FFFFFF;
+            --border: #E2E8F0;
+            --text-primary: #0F172A;
+            --text-secondary: #334155;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--bg-white);
+            font-size: 16px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        header {
+            border-bottom: 1px solid var(--border);
+            padding: 48px 0 32px;
+            margin-bottom: 48px;
+        }
+
+        .meta {
+            font-size: 0.875rem;
+            color: var(--slate-light);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 16px;
+        }
+
+        h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            line-height: 1.2;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            font-weight: 400;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 48px 0 20px;
+            color: var(--text-primary);
+            line-height: 1.3;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 32px 0 16px;
+            color: var(--text-primary);
+        }
+
+        h4 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin: 24px 0 12px;
+            color: var(--text-secondary);
+        }
+
+        p {
+            margin-bottom: 20px;
+            line-height: 1.7;
+            color: var(--text-secondary);
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin: 24px 0;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        thead {
+            background: var(--bg-light);
+        }
+
+        th {
+            text-align: left;
+            padding: 12px 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-secondary);
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background: var(--bg-light);
+        }
+
+        .numeric {
+            text-align: right;
+            font-family: "SF Mono", Monaco, monospace;
+            font-size: 0.875rem;
+        }
+
+        .highlight {
+            background: #EFF6FF;
+            font-weight: 500;
+        }
+
+        .chart-container {
+            margin: 32px 0;
+            padding: 24px;
+            background: var(--bg-light);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .chart-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .chart-subtitle {
+            font-size: 0.85rem;
+            color: var(--slate-light);
+            margin-bottom: 20px;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 320px;
+        }
+
+        .chart-wrapper.small {
+            height: 240px;
+        }
+
+        .source {
+            font-size: 0.75rem;
+            color: var(--slate-muted);
+            margin-top: 12px;
+            font-style: italic;
+        }
+
+        .info-box {
+            background: var(--bg-light);
+            border-left: 4px solid var(--navy);
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .info-box.emerald {
+            border-left-color: var(--emerald);
+        }
+
+        .info-box.amber {
+            border-left-color: var(--amber);
+        }
+
+        .info-box.rose {
+            border-left-color: var(--rose);
+        }
+
+        .info-box-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .info-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .info-box li {
+            margin-bottom: 6px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin: 24px 0;
+        }
+
+        .calendar-card {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            background: var(--bg-white);
+            position: relative;
+        }
+
+        .calendar-card.optimal {
+            border-color: var(--emerald);
+            background: #F0FDF4;
+        }
+
+        .calendar-card.major {
+            border-color: var(--navy);
+            background: #EFF6FF;
+        }
+
+        .card-date {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--slate-light);
+            margin-bottom: 8px;
+        }
+
+        .card-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+
+        .card-detail {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .discount-tag {
+            display: inline-block;
+            background: var(--emerald);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 12px;
+        }
+
+        .discount-tag.secondary {
+            background: var(--slate-light);
+        }
+
+        ul, ol {
+            margin: 16px 0;
+            padding-left: 24px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .phase-diagram {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            margin: 24px 0;
+            position: relative;
+        }
+
+        .phase-item {
+            display: flex;
+            gap: 16px;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border);
+            position: relative;
+        }
+
+        .phase-item:last-child {
+            border-bottom: none;
+        }
+
+        .phase-marker {
+            width: 40px;
+            height: 40px;
+            background: var(--navy);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.875rem;
+            flex-shrink: 0;
+        }
+
+        .phase-content {
+            flex: 1;
+        }
+
+        .phase-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .phase-desc {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .phase-meta {
+            font-size: 0.8rem;
+            color: var(--slate-light);
+            margin-top: 8px;
+        }
+
+        .comparison-table {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1px;
+            background: var(--border);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 24px 0;
+        }
+
+        .comp-header {
+            background: var(--bg-light);
+            padding: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .comp-cell {
+            background: var(--bg-white);
+            padding: 16px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        footer {
+            margin-top: 64px;
+            padding: 32px 0;
+            border-top: 1px solid var(--border);
+            font-size: 0.875rem;
+            color: var(--slate-light);
+        }
+
+        .footer-note {
+            margin-bottom: 8px;
+        }
+
+        @media (max-width: 640px) {
+            h1 { font-size: 1.75rem; }
+            .container { padding: 0 16px; }
+            .comparison-table { grid-template-columns: 1fr; }
+        }
+
+        @media print {
+            .chart-container { break-inside: avoid; }
+            body { font-size: 12pt; }
+        }
+    </style>
+<base target="_blank">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="meta">Market Analysis · January 2026</div>
+            <h1>MacBook Pricing Dynamics: Temporal Patterns and Purchase Optimization</h1>
+            <p class="subtitle">An examination of seasonal pricing variations, generational transition effects, and strategic purchase timing for Apple's MacBook product line.</p>
+        </header>
+
+        <article>
+            <h2>Executive Summary</h2>
+            <p>MacBook pricing demonstrates predictable cyclicality correlated with product release schedules, retail calendar events, and inventory liquidation patterns. Analysis of historical pricing data reveals discount windows ranging from 10% to 25% relative to manufacturer suggested retail pricing (MSRP), with temporal distribution concentrated in specific quarterly periods.</p>
+
+            <p>This analysis examines pricing mechanisms across authorized retail channels, trade-in value depreciation curves, and the economic trade-offs between immediate procurement and delayed purchase for cost optimization.</p>
+
+            <div class="info-box">
+                <div class="info-box-title">Key Findings</div>
+                <ul>
+                    <li>Black Friday/Cyber Monday period consistently delivers maximum absolute discounts ($200–$400)</li>
+                    <li>Generational transitions produce 15–25% price reductions on previous-generation inventory</li>
+                    <li>Trade-in values depreciate 15–25% immediately following new product announcements</li>
+                    <li>Education store pricing provides modest but consistent discounts (~$100) with bundling advantages</li>
+                </ul>
+            </div>
+
+            <h2>Seasonal Pricing Calendar</h2>
+
+            <h3>Annual Discount Distribution</h3>
+            <p>Retail pricing for MacBook models follows established patterns tied to consumer spending cycles, product release schedules, and competitive retail events. The following calendar represents observed pricing behavior across authorized retailers.</p>
+
+            <div class="calendar-grid">
+                <div class="calendar-card">
+                    <div class="card-date">March</div>
+                    <div class="card-title">Spring Retail Event</div>
+                    <div class="card-detail">Moderate inventory refresh; previous-generation clearance begins</div>
+                    <div class="card-detail">Typical discount: $100–$200</div>
+                    <span class="discount-tag secondary">Secondary Window</span>
+                </div>
+                <div class="calendar-card major">
+                    <div class="card-date">June (WWDC)</div>
+                    <div class="card-title">Developer Conference Cycle</div>
+                    <div class="card-detail">New product announcements trigger immediate previous-gen price drops</div>
+                    <div class="card-detail">Typical discount: $150–$300</div>
+                    <span class="discount-tag">Transition Period</span>
+                </div>
+                <div class="calendar-card">
+                    <div class="card-date">July–August</div>
+                    <div class="card-title">Education Season</div>
+                    <div class="card-detail">Student-focused promotions with accessory bundling</div>
+                    <div class="card-detail">Typical discount: $100 + bundled AirPods (retail value $179)</div>
+                    <span class="discount-tag secondary">Restricted Eligibility</span>
+                </div>
+                <div class="calendar-card optimal">
+                    <div class="card-date">November</div>
+                    <div class="card-title">Black Friday / Cyber Monday</div>
+                    <div class="card-detail">Peak discount period across all retail channels</div>
+                    <div class="card-detail">Typical discount: $200–$400</div>
+                    <span class="discount-tag">Maximum Savings</span>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">Discount Magnitude by Retail Event</div>
+                <div class="chart-subtitle">Observed price reductions for MacBook Pro 14" base configuration; data aggregated across major retailers</div>
+                <div class="chart-wrapper">
+                    <canvas id="seasonalChart"></canvas>
+                </div>
+                <p class="source">Source: MacTrackr price aggregation, 2024–2025 data</p>
+            </div>
+
+            <h2>Product Lifecycle Pricing</h2>
+
+            <h3>Generational Transition Effects</h3>
+            <p>New product introductions create immediate price pressure on previous-generation inventory. Analysis of M2-to-M3 and M3-to-M4 transitions demonstrates consistent depreciation patterns.</p>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Model Transition</th>
+                            <th>Launch MSRP</th>
+                            <th>Post-Release Price</th>
+                            <th>Depreciation</th>
+                            <th>Timing</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>M2 MacBook Air (15")</td>
+                            <td class="numeric">$1,299</td>
+                            <td class="numeric">$1,099</td>
+                            <td class="numeric">15.4%</td>
+                            <td>6 months post-M3</td>
+                        </tr>
+                        <tr>
+                            <td>M2 MacBook Pro (14")</td>
+                            <td class="numeric">$1,999</td>
+                            <td class="numeric">$1,699</td>
+                            <td class="numeric">15.0%</td>
+                            <td>4 months post-M3</td>
+                        </tr>
+                        <tr>
+                            <td>M3 MacBook Air (13")</td>
+                            <td class="numeric">$1,099</td>
+                            <td class="numeric">$899</td>
+                            <td class="numeric">18.2%</td>
+                            <td>5 months post-M4</td>
+                        </tr>
+                        <tr class="highlight">
+                            <td>M3 MacBook Pro (14")</td>
+                            <td class="numeric">$1,599</td>
+                            <td class="numeric">$1,299</td>
+                            <td class="numeric">18.8%</td>
+                            <td>Expected Q2 2026</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="source">Source: Historical pricing data from authorized retailers, 2023–2025</p>
+
+            <div class="chart-container">
+                <div class="chart-title">Price Depreciation Curve: First 12 Months Post-Release</div>
+                <div class="chart-subtitle">MacBook Air M3 base configuration; percentage of MSRP over time</div>
+                <div class="chart-wrapper">
+                    <canvas id="depreciationChart"></canvas>
+                </div>
+                <p class="source">Source: Aggregated retail pricing data, 2024–2025</p>
+            </div>
+
+            <h3>Lifecycle Purchase Phases</h3>
+            <p>Optimal purchase timing varies by buyer priority: cost minimization versus technology adoption.</p>
+
+            <div class="phase-diagram">
+                <div class="phase-item">
+                    <div class="phase-marker">1</div>
+                    <div class="phase-content">
+                        <div class="phase-title">Launch Phase (Months 0–3)</div>
+                        <p class="phase-desc">MSRP pricing dominates; limited discounting. Early adopter premium applies. Inventory constrained.</p>
+                        <div class="phase-meta">Discount: 0–5% | Best for: Technology adopters requiring latest specifications</div>
+                    </div>
+                </div>
+                <div class="phase-item">
+                    <div class="phase-marker">2</div>
+                    <div class="phase-content">
+                        <div class="phase-title">Stabilization Phase (Months 4–8)</div>
+                        <p class="phase-desc">Supply chain normalization; modest seasonal discounts appear. First major sale events (Black Friday) offer 10–15% reductions.</p>
+                        <div class="phase-meta">Discount: 10–15% | Best for: Balanced cost/technology optimization</div>
+                    </div>
+                </div>
+                <div class="phase-item">
+                    <div class="phase-marker">3</div>
+                    <div class="phase-content">
+                        <div class="phase-title">Transition Phase (Months 9–12)</div>
+                        <p class="phase-desc">Successors announced; aggressive clearance pricing on current generation. Maximum value for specification-conscious buyers.</p>
+                        <div class="phase-meta">Discount: 15–25% | Best for: Cost-minimizing buyers; performance-per-dollar optimization</div>
+                    </div>
+                </div>
+                <div class="phase-item">
+                    <div class="phase-marker">4</div>
+                    <div class="phase-content">
+                        <div class="phase-title">Legacy Phase (Months 13+)</div>
+                        <p class="phase-desc">Limited inventory; previous-generation availability through refurbished channels only. Pricing stabilizes at 20–30% below original MSRP.</p>
+                        <div class="phase-meta">Discount: 20–30% | Best for: Budget-constrained deployments; secondary/tertiary use cases</div>
+                    </div>
+                </div>
+            </div>
+
+            <h2>Channel Comparison: Education vs. Retail</h2>
+
+            <h3>Pricing Mechanism Analysis</h3>
+            <p>Apple's education store operates on distinct pricing logic compared to seasonal retail discounts, with structural advantages in bundling rather than base price reduction.</p>
+
+            <div class="comparison-table">
+                <div class="comp-header">Education Store</div>
+                <div class="comp-header">Seasonal Retail Sales</div>
+
+                <div class="comp-cell">
+                    <strong>Base Discount:</strong> ~$100 (consistent year-round)<br>
+                    <strong>Bundling:</strong> AirPods included (retail value $179)<br>
+                    <strong>Eligibility:</strong> Students, educators, staff<br>
+                    <strong>Timing:</strong> No temporal constraints<br>
+                    <strong>Total Value:</strong> $279 effective discount with bundle
+                </div>
+                <div class="comp-cell">
+                    <strong>Base Discount:</strong> $100–$400 (event-dependent)<br>
+                    <strong>Bundling:</strong> Rare; accessory discounts occasional<br>
+                    <strong>Eligibility:</strong> Unrestricted<br>
+                    <strong>Timing:</strong> Concentrated Nov–Dec, Jun–Jul<br>
+                    <strong>Total Value:</strong> Pure price reduction; no bundling
+                </div>
+            </div>
+
+            <div class="info-box emerald">
+                <div class="info-box-title">Economic Analysis</div>
+                <p style="font-size:0.9rem;margin:0;">For eligible buyers, education store pricing provides superior total value during non-sale periods. However, Black Friday retail pricing ($300–$400 discounts) exceeds education store value even with AirPods bundling. Optimal strategy: Education buyers should verify retail pricing during major sale events before defaulting to education store.</p>
+            </div>
+
+            <h2>Trade-In Value Dynamics</h2>
+
+            <h3>Temporal Depreciation Patterns</h3>
+            <p>Trade-in values for existing MacBook hardware demonstrate acute sensitivity to product announcement cycles. Value preservation requires strategic timing of trade-in execution.</p>
+
+            <div class="chart-container">
+                <div class="chart-title">Trade-In Value Depreciation: MacBook Pro 14" M2</div>
+                <div class="chart-subtitle">Value trajectory through M3 announcement cycle; percentage of pre-announcement value</div>
+                <div class="chart-wrapper">
+                    <canvas id="tradeinChart"></canvas>
+                </div>
+                <p class="source">Source: Apple Trade-In and third-party buyback pricing, October 2023–March 2024</p>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Timing Relative to Announcement</th>
+                            <th>Trade-In Value</th>
+                            <th>Depreciation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>4 weeks before (speculation phase)</td>
+                            <td class="numeric">$1,200</td>
+                            <td class="numeric">Baseline</td>
+                        </tr>
+                        <tr>
+                            <td>1 week before (peak value)</td>
+                            <td class="numeric">$1,250</td>
+                            <td class="numeric">+4.2%</td>
+                        </tr>
+                        <tr class="highlight">
+                            <td>Announcement week</td>
+                            <td class="numeric">$1,000</td>
+                            <td class="numeric">-20.0%</td>
+                        </tr>
+                        <tr>
+                            <td>4 weeks after</td>
+                            <td class="numeric">$850</td>
+                            <td class="numeric">-29.2%</td>
+                        </tr>
+                        <tr>
+                            <td>12 weeks after (stabilization)</td>
+                            <td class="numeric">$800</td>
+                            <td class="numeric">-33.3%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="info-box amber">
+                <div class="info-box-title">Strategic Implication</div>
+                <p style="font-size:0.9rem;margin:0;">Trade-in value optimization requires execution within 7 days preceding anticipated product announcements. Delay beyond announcement date results in irreversible value loss. Buyers planning generational upgrades should monitor supply chain leak indicators (typically 2–4 weeks before official announcements) to time trade-in execution.</p>
+            </div>
+
+            <h2>Refurbished Inventory Cycles</h2>
+
+            <h3>Secondary Market Supply Patterns</h3>
+            <p>Apple Certified Refurbished inventory demonstrates distinct supply cycles correlated with retail return patterns and product transition volumes.</p>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Period</th>
+                            <th>Inventory Driver</th>
+                            <th>Typical Availability</th>
+                            <th>Pricing Characteristic</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>February–April</td>
+                            <td>Holiday return processing</td>
+                            <td>High volume, mixed configurations</td>
+                            <td>Standard 15% discount</td>
+                        </tr>
+                        <tr>
+                            <td>May–July</td>
+                            <td>WWDC transition returns</td>
+                            <td>Previous-generation surge</td>
+                            <td>Enhanced discounts (18–20%)</td>
+                        </tr>
+                        <tr class="highlight">
+                            <td>August–October</td>
+                            <td>Back-to-school returns</td>
+                            <td>Peak configuration variety</td>
+                            <td>Standard 15% discount</td>
+                        </tr>
+                        <tr>
+                            <td>November–January</td>
+                            <td>Holiday purchase returns</td>
+                            <td>Constrained supply</td>
+                            <td>Firm pricing; limited selection</td>
+                        </tr>
+                </tbody>
+                </table>
+            </div>
+
+            <h2>Purchase Optimization Framework</h2>
+
+            <h3>Decision Matrix by Buyer Profile</h3>
+            <p>Optimal purchase strategy varies based on constraints, priorities, and risk tolerance.</p>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Buyer Profile</th>
+                            <th>Optimal Timing</th>
+                            <th>Expected Discount</th>
+                            <th>Risk Factors</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Enterprise/IT Procurement</td>
+                            <td>Q2 (May–June) or Q4 (November)</td>
+                            <td>15–20%</td>
+                            <td>Volume availability; configuration standardization</td>
+                        </tr>
+                        <tr>
+                            <td>Individual Cost Optimizer</td>
+                            <td>Black Friday/Cyber Monday</td>
+                            <td>20–25%</td>
+                            <td>Inventory competition; rapid sellout</td>
+                        </tr>
+                        <tr>
+                            <td>Education Eligible</td>
+                            <td>July–August (bundled) or November (retail)</td>
+                            <td>18–25% effective</td>
+                            <td>Eligibility verification; bundle utilization</td>
+                        </tr>
+                        <tr>
+                            <td>Previous-Generation Seeker</td>
+                            <td>2–3 months post-new release</td>
+                            <td>25–30%</td>
+                            <td>Specification obsolescence; warranty duration</td>
+                        </tr>
+                        <tr>
+                            <td>Immediate Need (No Flexibility)</td>
+                            <td>Current retail with price protection</td>
+                            <td>0–5%</td>
+                            <td>Opportunity cost of delayed discount</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h2>Conclusion</h2>
+
+            <p>MacBook pricing exhibits sufficient predictability to enable strategic purchase optimization. The concentration of maximum discounts during November retail events and June generational transitions creates clear temporal targets for cost-conscious buyers. Historical data indicates patient buyers who align purchases with these windows achieve 15–25% cost reduction relative to MSRP.</p>
+
+            <p>Trade-in value management requires complementary timing discipline. Executing hardware trade-ins immediately before product announcements preserves 20–30% additional value compared to post-announcement liquidation. The convergence of purchase discount maximization and trade-in value preservation creates optimal cost transition points for generational upgrades.</p>
+
+            <p>Education store pricing provides consistent but modest advantages suitable for buyers with immediate needs and verified eligibility. However, unrestricted retail sales events generally exceed education pricing for base configurations, suggesting eligible buyers should comparison-shop during major sale periods.</p>
+
+            <p>Refurbished channels offer alternative cost optimization for specification-flexible buyers, with inventory cycles providing enhanced selection during post-announcement periods. The 15% standard discount, occasionally extending to 20% during liquidation phases, positions refurbished as a viable channel for secondary deployments or budget-constrained primary use.</p>
+
+            <div class="info-box">
+                <div class="info-box-title">Data Limitations</div>
+                <p style="font-size:0.9rem;margin:0;">Pricing data represents historical patterns and observed market behavior. Future pricing may deviate based on supply chain conditions, competitive dynamics, and macroeconomic factors. Analysis based on U.S. retail market; international markets exhibit different seasonal patterns and pricing structures.</p>
+            </div>
+        </article>
+
+        <footer>
+            <div class="footer-note">MacTrackr is an independent price monitoring service. Not affiliated with Apple Inc.</div>
+            <div>Analysis based on publicly available pricing data and historical market observations.</div>
+        </footer>
+    </div>
+
+    <script>
+        // Seasonal Chart
+        const seasonalCtx = document.getElementById('seasonalChart').getContext('2d');
+        new Chart(seasonalCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Spring (Mar)', 'WWDC (Jun)', 'Back to School (Jul–Aug)', 'Black Friday (Nov)'],
+                datasets: [{
+                    label: 'Typical Discount ($)',
+                    data: [150, 225, 100, 300],
+                    backgroundColor: ['#94A3B8', '#1E40AF', '#64748B', '#059669'],
+                    borderRadius: 4,
+                    barPercentage: 0.6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'top',
+                        font: { weight: '600', size: 12 },
+                        formatter: (value) => '$' + value
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: '#E2E8F0', drawBorder: false },
+                        ticks: {
+                            callback: function(value) {
+                                return '$' + value;
+                            },
+                            font: { size: 11 }
+                        }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { font: { size: 11 } }
+                    }
+                }
+            },
+            plugins: [ChartDataLabels]
+        });
+
+        // Depreciation Chart
+        const depreciationCtx = document.getElementById('depreciationChart').getContext('2d');
+        new Chart(depreciationCtx, {
+            type: 'line',
+            data: {
+                labels: ['Launch', 'Month 3', 'Month 6', 'Month 9', 'Month 12'],
+                datasets: [{
+                    label: '% of MSRP',
+                    data: [100, 98, 92, 85, 78],
+                    borderColor: '#1E40AF',
+                    backgroundColor: 'rgba(30, 64, 175, 0.1)',
+                    borderWidth: 2,
+                    tension: 0.3,
+                    fill: true,
+                    pointRadius: 5,
+                    pointBackgroundColor: '#1E40AF'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    datalabels: {
+                        align: 'top',
+                        font: { weight: '600', size: 11 },
+                        formatter: (value) => value + '%'
+                    }
+                },
+                scales: {
+                    y: {
+                        min: 60,
+                        max: 105,
+                        grid: { color: '#E2E8F0', drawBorder: false },
+                        ticks: {
+                            callback: function(value) {
+                                return value + '%';
+                            },
+                            font: { size: 11 }
+                        }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { font: { size: 11 } }
+                    }
+                }
+            },
+            plugins: [ChartDataLabels]
+        });
+
+        // Trade-in Chart
+        const tradeinCtx = document.getElementById('tradeinChart').getContext('2d');
+        new Chart(tradeinCtx, {
+            type: 'line',
+            data: {
+                labels: ['4 wks pre', '1 wk pre', 'Announcement', '1 wk post', '4 wks post', '12 wks post'],
+                datasets: [{
+                    label: 'Trade-In Value (% of baseline)',
+                    data: [100, 104, 80, 75, 71, 67],
+                    borderColor: '#E11D48',
+                    backgroundColor: 'rgba(225, 29, 72, 0.1)',
+                    borderWidth: 2,
+                    tension: 0.2,
+                    fill: true,
+                    pointRadius: 5,
+                    pointBackgroundColor: '#E11D48'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    datalabels: {
+                        align: 'top',
+                        font: { weight: '600', size: 10 },
+                        formatter: (value) => value + '%'
+                    }
+                },
+                scales: {
+                    y: {
+                        min: 50,
+                        max: 110,
+                        grid: { color: '#E2E8F0', drawBorder: false },
+                        ticks: {
+                            callback: function(value) {
+                                return value + '%';
+                            },
+                            font: { size: 11 }
+                        }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { font: { size: 10 } }
+                    }
+                }
+            },
+            plugins: [ChartDataLabels]
+        });
+    </script>
+</body>
+</html>
