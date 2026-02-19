@@ -8,6 +8,21 @@ from app.database import SessionLocal, engine
 from app.models import Base, Product, Retailer, Price
 from datetime import datetime
 
+def generate_search_url(retailer_name: str, search_query: str) -> str:
+    """Generate actual search URLs for retailers"""
+    search_urls = {
+        "Apple": f"https://www.apple.com/search/{search_query}",
+        "Best Buy": f"https://www.bestbuy.com/site/searchpage.jsp?st={search_query}",
+        "Walmart": f"https://www.walmart.com/search?q={search_query}",
+        "Target": f"https://www.target.com/s?searchTerm={search_query}",
+        "Amazon": f"https://www.amazon.com/s?k={search_query}",
+        "B&H Photo": f"https://www.bhphotovideo.com/c/search?q={search_query}",
+        "Adorama": f"https://www.adorama.com/search?searchinfo={search_query}",
+        "eBay": f"https://www.ebay.com/sch/i.html?_nkw={search_query}",
+        "CDW": f"https://www.cdw.com/search/?key={search_query}"
+    }
+    return search_urls.get(retailer_name, f"https://www.google.com/search?q={search_query}")
+
 def seed_retailers(db: Session):
     """Create sample retailers"""
     retailers = [
@@ -327,6 +342,216 @@ def seed_mactrackr_products(db: Session):
                 "features": "Precision Finding, Find My Network"
             },
             "image_url": "https://example.com/airtag-4pack.jpg"
+        },
+        # iPhone Products (17 more products to reach 31 total)
+        {
+            "name": "iPhone 16 Pro Max",
+            "category": "iphone",
+            "description": "iPhone 16 Pro Max 256GB",
+            "model_identifier": "A3105",
+            "release_year": 2024,
+            "specs": {
+                "storage": "256GB",
+                "display": "6.9-inch Super Retina XDR",
+                "color": "Natural Titanium"
+            },
+            "image_url": "https://example.com/iphone-16-pro-max.jpg"
+        },
+        {
+            "name": "iPhone 16 Pro",
+            "category": "iphone",
+            "description": "iPhone 16 Pro 256GB",
+            "model_identifier": "A3104",
+            "release_year": 2024,
+            "specs": {
+                "storage": "256GB",
+                "display": "6.3-inch Super Retina XDR",
+                "color": "Natural Titanium"
+            },
+            "image_url": "https://example.com/iphone-16-pro.jpg"
+        },
+        {
+            "name": "iPhone 16 Plus",
+            "category": "iphone",
+            "description": "iPhone 16 Plus 256GB",
+            "model_identifier": "A3103",
+            "release_year": 2024,
+            "specs": {
+                "storage": "256GB",
+                "display": "6.7-inch Super Retina XDR",
+                "color": "Black"
+            },
+            "image_url": "https://example.com/iphone-16-plus.jpg"
+        },
+        {
+            "name": "iPhone 16",
+            "category": "iphone",
+            "description": "iPhone 16 128GB",
+            "model_identifier": "A3102",
+            "release_year": 2024,
+            "specs": {
+                "storage": "128GB",
+                "display": "6.1-inch Super Retina XDR",
+                "color": "Black"
+            },
+            "image_url": "https://example.com/iphone-16.jpg"
+        },
+        {
+            "name": "MacBook Pro 16-inch M5",
+            "category": "mac",
+            "description": "MacBook Pro 16-inch with M5 chip",
+            "model_identifier": "A3114",
+            "release_year": 2025,
+            "specs": {
+                "cpu": "Apple M5 Pro (12-core CPU)",
+                "ram": "32GB Unified Memory",
+                "storage": "1TB SSD",
+                "display": "16.2-inch Liquid Retina XDR",
+                "color": "Space Black"
+            },
+            "image_url": "https://example.com/macbook-pro-16-m5.jpg"
+        },
+        {
+            "name": "iPad Pro 13-inch M5",
+            "category": "ipad",
+            "description": "iPad Pro 13-inch with M5 chip",
+            "model_identifier": "A3350",
+            "release_year": 2025,
+            "specs": {
+                "cpu": "Apple M5 (8-core CPU)",
+                "storage": "512GB",
+                "display": "13-inch Liquid Retina XDR"
+            },
+            "image_url": "https://example.com/ipad-pro-13-m5.jpg"
+        },
+        {
+            "name": "iPad Pro 11-inch M5",
+            "category": "ipad",
+            "description": "iPad Pro 11-inch with M5 chip",
+            "model_identifier": "A3351",
+            "release_year": 2025,
+            "specs": {
+                "cpu": "Apple M5 (8-core CPU)",
+                "storage": "256GB",
+                "display": "11-inch Liquid Retina XDR"
+            },
+            "image_url": "https://example.com/ipad-pro-11-m5.jpg"
+        },
+        {
+            "name": "Apple Watch Series 10",
+            "category": "watch",
+            "description": "Apple Watch Series 10 42mm GPS",
+            "model_identifier": "A3000",
+            "release_year": 2024,
+            "specs": {
+                "display": "42mm",
+                "case": "Aluminum",
+                "storage": "32GB"
+            },
+            "image_url": "https://example.com/apple-watch-10.jpg"
+        },
+        {
+            "name": "Apple Watch Ultra 2",
+            "category": "watch",
+            "description": "Apple Watch Ultra 2 49mm GPS + Cellular",
+            "model_identifier": "A3001",
+            "release_year": 2024,
+            "specs": {
+                "display": "49mm",
+                "case": "Titanium",
+                "storage": "64GB"
+            },
+            "image_url": "https://example.com/apple-watch-ultra-2.jpg"
+        },
+        {
+            "name": "AirPods Pro 3rd Gen",
+            "category": "airpods",
+            "description": "AirPods Pro 3rd Generation",
+            "model_identifier": "A3214",
+            "release_year": 2024,
+            "specs": {
+                "features": "Adaptive Audio, USB-C"
+            },
+            "image_url": "https://example.com/airpods-pro-3.jpg"
+        },
+        {
+            "name": "AirPods Max",
+            "category": "airpods",
+            "description": "AirPods Max USB-C",
+            "model_identifier": "A3215",
+            "release_year": 2024,
+            "specs": {
+                "features": "Active Noise Cancellation, USB-C"
+            },
+            "image_url": "https://example.com/airpods-max.jpg"
+        },
+        {
+            "name": "HomePod",
+            "category": "accessories",
+            "description": "HomePod 2nd Generation",
+            "model_identifier": "A2764",
+            "release_year": 2023,
+            "specs": {
+                "features": "Spatial Audio, Thread"
+            },
+            "image_url": "https://example.com/homepod.jpg"
+        },
+        {
+            "name": "HomePod mini",
+            "category": "accessories",
+            "description": "HomePod mini",
+            "model_identifier": "A2374",
+            "release_year": 2020,
+            "specs": {
+                "features": "Siri, Thread"
+            },
+            "image_url": "https://example.com/homepod-mini.jpg"
+        },
+        {
+            "name": "Magic Keyboard for iPad Pro",
+            "category": "accessories",
+            "description": "Magic Keyboard for iPad Pro 13-inch",
+            "model_identifier": "A2836",
+            "release_year": 2024,
+            "specs": {
+                "features": "Trackpad, USB-C"
+            },
+            "image_url": "https://example.com/magic-keyboard-ipad.jpg"
+        },
+        {
+            "name": "MagSafe Battery Pack",
+            "category": "accessories",
+            "description": "MagSafe Battery Pack for iPhone",
+            "model_identifier": "A2384",
+            "release_year": 2021,
+            "specs": {
+                "features": "Wireless Charging, MagSafe"
+            },
+            "image_url": "https://example.com/magsafe-battery.jpg"
+        },
+        {
+            "name": "Apple TV 4K",
+            "category": "accessories",
+            "description": "Apple TV 4K 128GB",
+            "model_identifier": "A2843",
+            "release_year": 2022,
+            "specs": {
+                "storage": "128GB",
+                "features": "4K HDR, Dolby Atmos"
+            },
+            "image_url": "https://example.com/apple-tv-4k.jpg"
+        },
+        {
+            "name": "Studio Display",
+            "category": "accessories",
+            "description": "Studio Display 27-inch 5K",
+            "model_identifier": "A2525",
+            "release_year": 2022,
+            "specs": {
+                "display": "27-inch 5K Retina",
+                "features": "12MP Ultra Wide camera"
+            },
+            "image_url": "https://example.com/studio-display.jpg"
         }
     ]
 
@@ -543,6 +768,109 @@ def seed_sample_prices(db: Session):
             {"retailer": "Walmart", "price": 79, "condition": "new"},
             {"retailer": "Target", "price": 79, "condition": "new"},
         ]},
+        # New products (17 more to reach 31 total)
+        {"product_name": "iPhone 16 Pro Max", "prices": [
+            {"retailer": "Apple", "price": 1199, "condition": "new"},
+            {"retailer": "Best Buy", "price": 1149, "condition": "new"},
+            {"retailer": "Amazon", "price": 1149, "condition": "new"},
+            {"retailer": "Walmart", "price": 1199, "condition": "new"},
+            {"retailer": "Target", "price": 1199, "condition": "new"},
+        ]},
+        {"product_name": "iPhone 16 Pro", "prices": [
+            {"retailer": "Apple", "price": 999, "condition": "new"},
+            {"retailer": "Best Buy", "price": 949, "condition": "new"},
+            {"retailer": "Amazon", "price": 949, "condition": "new"},
+            {"retailer": "Walmart", "price": 999, "condition": "new"},
+            {"retailer": "Target", "price": 999, "condition": "new"},
+        ]},
+        {"product_name": "iPhone 16 Plus", "prices": [
+            {"retailer": "Apple", "price": 899, "condition": "new"},
+            {"retailer": "Best Buy", "price": 849, "condition": "new"},
+            {"retailer": "Amazon", "price": 849, "condition": "new"},
+            {"retailer": "Walmart", "price": 899, "condition": "new"},
+            {"retailer": "Target", "price": 899, "condition": "new"},
+        ]},
+        {"product_name": "iPhone 16", "prices": [
+            {"retailer": "Apple", "price": 799, "condition": "new"},
+            {"retailer": "Best Buy", "price": 749, "condition": "new"},
+            {"retailer": "Amazon", "price": 749, "condition": "new"},
+            {"retailer": "Walmart", "price": 799, "condition": "new"},
+            {"retailer": "Target", "price": 799, "condition": "new"},
+        ]},
+        {"product_name": "MacBook Pro 16-inch M5", "prices": [
+            {"retailer": "Apple", "price": 2499, "condition": "new"},
+            {"retailer": "Best Buy", "price": 2399, "condition": "new"},
+            {"retailer": "Amazon", "price": 2399, "condition": "new"},
+            {"retailer": "B&H Photo", "price": 2399, "condition": "new"},
+            {"retailer": "Adorama", "price": 2399, "condition": "new"},
+        ]},
+        {"product_name": "iPad Pro 13-inch M5", "prices": [
+            {"retailer": "Apple", "price": 1299, "condition": "new"},
+            {"retailer": "Best Buy", "price": 1249, "condition": "new"},
+            {"retailer": "Amazon", "price": 1249, "condition": "new"},
+            {"retailer": "Target", "price": 1299, "condition": "new"},
+        ]},
+        {"product_name": "iPad Pro 11-inch M5", "prices": [
+            {"retailer": "Apple", "price": 999, "condition": "new"},
+            {"retailer": "Best Buy", "price": 949, "condition": "new"},
+            {"retailer": "Amazon", "price": 949, "condition": "new"},
+            {"retailer": "Target", "price": 999, "condition": "new"},
+        ]},
+        {"product_name": "Apple Watch Series 10", "prices": [
+            {"retailer": "Apple", "price": 399, "condition": "new"},
+            {"retailer": "Best Buy", "price": 379, "condition": "new"},
+            {"retailer": "Amazon", "price": 379, "condition": "new"},
+            {"retailer": "Target", "price": 399, "condition": "new"},
+        ]},
+        {"product_name": "Apple Watch Ultra 2", "prices": [
+            {"retailer": "Apple", "price": 799, "condition": "new"},
+            {"retailer": "Best Buy", "price": 749, "condition": "new"},
+            {"retailer": "Amazon", "price": 749, "condition": "new"},
+        ]},
+        {"product_name": "AirPods Pro 3rd Gen", "prices": [
+            {"retailer": "Apple", "price": 249, "condition": "new"},
+            {"retailer": "Best Buy", "price": 229, "condition": "new"},
+            {"retailer": "Amazon", "price": 229, "condition": "new"},
+            {"retailer": "Target", "price": 249, "condition": "new"},
+        ]},
+        {"product_name": "AirPods Max", "prices": [
+            {"retailer": "Apple", "price": 549, "condition": "new"},
+            {"retailer": "Best Buy", "price": 499, "condition": "new"},
+            {"retailer": "Amazon", "price": 499, "condition": "new"},
+        ]},
+        {"product_name": "HomePod", "prices": [
+            {"retailer": "Apple", "price": 299, "condition": "new"},
+            {"retailer": "Best Buy", "price": 279, "condition": "new"},
+            {"retailer": "Amazon", "price": 279, "condition": "new"},
+        ]},
+        {"product_name": "HomePod mini", "prices": [
+            {"retailer": "Apple", "price": 99, "condition": "new"},
+            {"retailer": "Best Buy", "price": 89, "condition": "new"},
+            {"retailer": "Amazon", "price": 89, "condition": "new"},
+            {"retailer": "Target", "price": 99, "condition": "new"},
+        ]},
+        {"product_name": "Magic Keyboard for iPad Pro", "prices": [
+            {"retailer": "Apple", "price": 349, "condition": "new"},
+            {"retailer": "Best Buy", "price": 329, "condition": "new"},
+            {"retailer": "Amazon", "price": 329, "condition": "new"},
+        ]},
+        {"product_name": "MagSafe Battery Pack", "prices": [
+            {"retailer": "Apple", "price": 99, "condition": "new"},
+            {"retailer": "Best Buy", "price": 89, "condition": "new"},
+            {"retailer": "Amazon", "price": 89, "condition": "new"},
+        ]},
+        {"product_name": "Apple TV 4K", "prices": [
+            {"retailer": "Apple", "price": 129, "condition": "new"},
+            {"retailer": "Best Buy", "price": 119, "condition": "new"},
+            {"retailer": "Amazon", "price": 119, "condition": "new"},
+            {"retailer": "Target", "price": 129, "condition": "new"},
+        ]},
+        {"product_name": "Studio Display", "prices": [
+            {"retailer": "Apple", "price": 1599, "condition": "new"},
+            {"retailer": "Best Buy", "price": 1499, "condition": "new"},
+            {"retailer": "Amazon", "price": 1499, "condition": "new"},
+            {"retailer": "B&H Photo", "price": 1499, "condition": "new"},
+        ]},
     ]
 
     count = 0
@@ -558,12 +886,15 @@ def seed_sample_prices(db: Session):
                     ).first()
 
                     if not existing:
+                        # Generate search URL instead of fake direct URL
+                        search_query = product.name.replace(" ", "+")
+                        listing_url = generate_search_url(retailer.name, search_query)
                         db.add(Price(
                             product_id=product.id,
                             retailer_id=retailer.id,
                             price=price_info["price"],
                             condition=price_info["condition"],
-                            listing_url=f"https://{retailer.base_url}/product/{product.id}",
+                            listing_url=listing_url,
                             listing_title=product.name
                         ))
                         count += 1
