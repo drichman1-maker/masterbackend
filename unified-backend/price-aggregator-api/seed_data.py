@@ -305,31 +305,6 @@ def seed_mactrackr_products(db: Session):
             },
             "image_url": "https://example.com/airpods-4.jpg"
         },
-        # HomePod
-        {
-            "name": "HomePod mini",
-            "category": "homepod",
-            "description": "HomePod mini",
-            "model_identifier": "A2375",
-            "release_year": 2020,
-            "specs": {
-                "chip": "Apple S5",
-                "features": "Spatial Audio, Thread"
-            },
-            "image_url": "https://example.com/homepod-mini.jpg"
-        },
-        {
-            "name": "HomePod",
-            "category": "homepod",
-            "description": "HomePod",
-            "model_identifier": "A2919",
-            "release_year": 2023,
-            "specs": {
-                "chip": "Apple S7",
-                "features": "Spatial Audio, Room Sensing"
-            },
-            "image_url": "https://example.com/homepod.jpg"
-        },
         # Accessories
         {
             "name": "Apple Pencil Pro",
@@ -552,21 +527,6 @@ def seed_sample_prices(db: Session):
             {"retailer": "Amazon", "price": 109, "condition": "new"},
             {"retailer": "Walmart", "price": 129, "condition": "new"},
             {"retailer": "Target", "price": 129, "condition": "new"},
-        ]},
-        # HomePod
-        {"product_name": "HomePod mini", "prices": [
-            {"retailer": "Apple", "price": 99, "condition": "new"},
-            {"retailer": "Best Buy", "price": 79, "condition": "new"},
-            {"retailer": "Amazon", "price": 79, "condition": "new"},
-            {"retailer": "Walmart", "price": 99, "condition": "new"},
-            {"retailer": "Target", "price": 99, "condition": "new"},
-        ]},
-        {"product_name": "HomePod", "prices": [
-            {"retailer": "Apple", "price": 299, "condition": "new"},
-            {"retailer": "Best Buy", "price": 249, "condition": "new"},
-            {"retailer": "Amazon", "price": 249, "condition": "new"},
-            {"retailer": "Walmart", "price": 299, "condition": "new"},
-            {"retailer": "Target", "price": 299, "condition": "new"},
         ]},
         # Accessories
         {"product_name": "Apple Pencil Pro", "prices": [
