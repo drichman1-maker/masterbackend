@@ -23,7 +23,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="Price Aggregator API",
     description="Multi-category price tracking with Tier 1-2 field support",
-    version="2.0.0",
+    version="2.1.0",  # Updated: MacTrackr 31 products with search URLs
     lifespan=lifespan
 )
 
@@ -46,9 +46,13 @@ app.include_router(mactrackr.router, tags=["mactrackr"])  # MacTrackr compatibil
 async def root():
     return {
         "message": "Price Aggregator API",
-        "version": "2.0.0",
+        "version": "2.1.0",
+        "products": 31,
         "docs": "/docs",
-        "features": ["Tier 1-2 fields", "Multi-category", "Price alerts"]
+        "endpoints": {
+            "mactrackr": "/api/products (31 Apple products with search URLs)",
+            "database": "/api/v1/products (database-backed)"
+        }
     }
 
 @app.get("/health")
