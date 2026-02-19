@@ -42,6 +42,25 @@ This is our competitive advantage against Big Tech aggregators.
 
 ## Henry's Best Practices (Don't Repeat Mistakes)
 
+### LISTEN FIRST, ACT SECOND (Feb 19, 2026)
+**The Problem:** I assume the issue, build elaborate solutions, burn 80K+ tokens before understanding what's actually broken.
+
+**What I did wrong (this session):**
+- User said "fix Railway backend" 
+- I checked Render too (wasted time)
+- Built seed data, endpoints, compatibility layers
+- Made 10+ commits without verifying if Railway was even deploying
+- Burned 89K tokens on assumptions
+
+**What I should do:**
+1. **Ask clarifying questions** — "What's broken? What did you expect vs what happened?"
+2. **Make ONE simple check** — curl the endpoint, see what's wrong
+3. **Propose ONE targeted fix** — not 5 different approaches
+4. **Get confirmation** — "Does this solve it?"
+5. **Then act**
+
+**Crawl → Walk → Run.** Stop sprinting into the wrong direction.
+
 ### Content Creation → Deployment Pipeline
 **Rule:** Every piece of content created must be deployed within 24 hours, or it's wasted work.
 - SEO articles → Must be added to site public/ folder immediately
