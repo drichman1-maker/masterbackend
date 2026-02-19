@@ -641,3 +641,122 @@ When users sign up for price alerts, clarify:
 - Glitch effects, digital noise
 - Fast cuts, techno basslines
 - 
+---
+
+## Unified Backend Architecture (Feb 19, 2026)
+
+**Status:** Deployed and working at `price-aggregator-api-production.up.railway.app`
+
+### Structure
+- FastAPI with PostgreSQL
+- `/api/products` — MacTrackr compatibility (static data with direct URLs)
+- `/api/v1/products` — Full CRUD with database
+- Scrapers ready for Apple, Pokemon, eBay, Reverb, PriceCharting
+
+### Key Endpoint
+```bash
+GET https://price-aggregator-api-production.up.railway.app/api/products
+# Returns array of products with direct retailer URLs
+```
+
+### Products with Direct URLs (7)
+All 7 products have verified URLs to Apple, Best Buy, Walmart, Target.
+
+### Expansion Ready
+- MintCondition (Pokemon cards) — needs data structure
+- RumbleGames (video games) — needs scraper integration
+- Vertical onboarding = add category router + seed data
+
+---
+
+## Deployment Lessons (Feb 19, 2026)
+
+### Railway
+- DATABASE_URL must be set manually in Variables tab
+- Auto-linking doesn't always work — verify in logs
+- Start command: `python start.py`
+
+### Render
+- Cron jobs require starter plan (not free)
+- Blueprint plans: "starter", "standard" deprecated
+- Use "individual" for PostgreSQL on Pro accounts
+
+### Pattern
+1. Deploy service
+2. Check logs for DATABASE_URL
+3. If missing → set manually
+4. Redeploy
+
+---
+
+## Backend Connection Workflow (Feb 19, 2026)
+
+### Problem
+Unified backend code lives at `/Users/douglasrichman/.openclaw/workspace/unified-backend/price-aggregator-api/` but is NOT connected to GitHub.
+
+**Symptoms:**
+- Railway backend returns 7 products (from Feb 19 deployment)
+- Updated seed_data.py has 15 products ready locally
+- Can't push to Railway because no git remote configured
+
+### Solution Pattern
+
+**Option A: Create GitHub repo manually**
+1. Go to github.com/new
+2. Create `drichman1-maker/price-aggregator-api` (public)
+3. Run in local directory:
+   ```bash
+   cd /Users/douglasrichman/.openclaw/workspace/unified-backend/price-aggregator-api
+   git remote add origin https://github.com/drichman1-maker/price-aggregator-api.git
+   git branch -M master
+   git push -u origin master
+   ```
+4. Railway will auto-deploy on push
+
+**Option B: Connect existing Railway service to GitHub**
+1. Go to railway.app dashboard
+2. Find price-aggregator-api service
+3. Settings → GitHub → Connect repository
+4. Select or create the repo
+5. Deploy triggers automatically
+
+### Key Files to Track
+- `seed_data.py` — Product data (updated Feb 19 with 15 MacTrackr products)
+- `render.yaml` — Render deployment config
+- `requirements.txt` — Python dependencies
+
+### After Connection
+- Push changes with `git add seed_data.py && git commit -m "Add products" && git push`
+- Railway auto-deploys in ~2-5 minutes
+- Verify: `curl https://price-aggregator-api-production.up.railway.app/api/products`
+
+---
+
+## Today's Work (Feb 19, 2026)
+
+### Completed
+- ✅ Added 15 MacTrackr products to unified-backend seed_data.py
+- ✅ Added 9 Apple retailers (Apple, Best Buy, Walmart, Target, Amazon, B&H, Adorama, eBay, CDW)
+- ✅ Added pricing for all 15 products across retailers
+- ✅ Committed locally: `git commit -m "Add 15 MacTrackr products + 9 retailers"`
+
+### Blocked
+- ⚠️ Unified backend code is local (no GitHub remote)
+- ⚠️ GitHub CLI token lacks `public_repo` scope
+- ⚠️ Render deployment stuck at 31 products (deployment in progress >20 min)
+
+### Products Added
+| Category | Products |
+|----------|----------|
+| Mac | MacBook Pro 14" M5, MacBook Air 13" M4, MacBook Air 15" M4, Mac mini M4, Mac Studio M3 Max, iMac 24" M4 |
+| iPad | iPad Air 13" M3, iPad Air 11" M3, iPad 11" A16, iPad mini A17 Pro |
+| Watch | Apple Watch SE 40mm |
+| AirPods | AirPods 4 |
+| HomePod | HomePod mini, HomePod |
+| Accessories | Apple Pencil Pro, AirTag 4-Pack |
+
+### Next Steps
+1. Connect unified-backend to GitHub (manual repo creation required)
+2. Trigger Railway redeploy
+3. Verify 22 products live (7 existing + 15 new)
+4. Optionally clean up Render deployment

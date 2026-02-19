@@ -54,3 +54,87 @@
 - **++Simplicity First++:** Make every change as simple as possible. Impact minimal code.
 - **++No Laziness++:** Find root causes. No temporary fixes. Senior developer standards.
 - **++Minimal Impact++:** Changes should only touch what's necessary. Avoid introducing bugs.
+
+---
+
+## Deployment Patterns (Feb 19, 2026)
+
+### Before Deploying a New Service
+
+1. **Check existing services** — don't create duplicate databases
+2. **Verify plan compatibility** — free/starter/individual matter
+3. **Prepare environment variables** — DATABASE_URL, API keys
+4. **Test locally first** — catch errors before deployment
+
+### Railway Deployment Checklist
+
+- [ ] Create GitHub repo with code
+- [ ] Add railway.json or Dockerfile
+- [ ] Create service in Railway dashboard
+- [ ] Add PostgreSQL if needed
+- [ ] **Manually set DATABASE_URL in Variables**
+- [ ] Deploy and check logs
+- [ ] Verify health endpoint
+
+### Common Issues
+
+| Issue | Cause | Fix |
+|-------|-------|-----|
+| Healthcheck fails | DATABASE_URL not set | Set in Variables tab |
+| Connection to localhost | Default fallback triggered | DATABASE_URL empty or wrong |
+| Cron fails | Free tier doesn't support cron | Upgrade to starter+ |
+| Blueprint fails | Legacy plan names | Use "individual" for PostgreSQL |
+
+### Post-Deployment Verification
+
+```bash
+curl https://<service>.up.railway.app/health
+curl https://<service>.up.railway.app/api/products
+```
+
+Both should return 200 OK with expected data.
+
+---
+
+## Local Git → GitHub → Deployment Pattern
+
+### When You Have Code But No GitHub Remote
+
+**Problem:** Code lives in `/Users/douglasrichman/.openclaw/workspace/unified-backend/price-aggregator-api/` but no GitHub remote configured.
+
+**Solution:**
+
+1. **Create GitHub repo manually** (if CLI token lacks scopes):
+   - Go to github.com/new
+   - Repository name: `price-aggregator-api`
+   - Public repo, no README
+
+2. **Connect local code to GitHub:**
+   ```bash
+   cd /Users/douglasrichman/.openclaw/workspace/unified-backend/price-aggregator-api
+   git remote add origin https://github.com/drichman1-maker/price-aggregator-api.git
+   git branch -M master
+   git push -u origin master
+   ```
+
+3. **Verify Railway/Render auto-deploy:**
+   ```bash
+   curl https://price-aggregator-api-production.up.railway.app/api/products
+   ```
+
+### Key Commands
+
+| Task | Command |
+|------|---------|
+| Check current remotes | `git remote -v` |
+| Add GitHub remote | `git remote add origin https://github.com/user/repo.git` |
+| Push and link | `git push -u origin master` |
+| Force push (careful!) | `git push -f origin master` |
+
+### Common Issues
+
+| Issue | Cause | Fix |
+|-------|-------|-----|
+| "origin does not exist" | No remote configured | `git remote add origin <url>` |
+| Token lacks scopes | CLI token missing `public_repo` | Create repo manually in browser |
+| No auto-deploy | Service not connected to GitHub | Connect in Railway/Render dashboard |
